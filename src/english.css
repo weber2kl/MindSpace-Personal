@@ -1,0 +1,15 @@
+.english-screen { gap: 18px; }
+.english-practice-modes { justify-self: start; }
+.english-tabs { padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.english-tabs .button { white-space: nowrap; }
+.english-progress-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 13px; }
+.english-progress-card { display: grid; align-content: start; gap: 12px; padding: 16px; }
+.english-progress-card h2, .english-metric { display: flex; align-items: center; gap: 8px; }
+.english-progress-card h2 svg { color: var(--accent); }
+.english-metric { justify-content: space-between; }
+.english-metric span { color: var(--muted); }
+.english-metric strong { font-size: 16px; white-space: nowrap; }
+.english-schedule { display: grid; gap: 12px; padding-top: 15px; }
+.day-learning-link { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); font-size: 12px; padding: 2px 0; text-align: left; }
+.day-learning-link:hover { text-decoration: underline; }
+@media (max-width: 670px) { .english-progress-grid { grid-template-columns: 1fr; } }

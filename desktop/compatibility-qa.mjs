@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { DatabaseSync } from 'node:sqlite';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
+import { openStorage, readDatabaseBackup } from './storage.mjs';
+
+const source=process.argv[2];
+if(!source)throw new Error('Pass a verified backup path, never a live database.');
+const folder=mkdtempSync(resolve('.runtime/compatibility-'));
+const db=new DatabaseSync(source,{readOnly:true});
+const raw=db.prepare('SELECT payload FROM planner_state WHERE id=1').get().payload;db.close();
+const original=JSON.parse(raw), upgraded=readDatabaseBackup(source);
+const expected = structuredClone(original);
+expected.learning.theorySessions ??= [];
+assert.ok(isDeepStrictEqual(upgraded, expected), 'Reading the backup changed existing data');
+let store=openStorage(folder);store.save(upgraded,0);store.close();
+store=openStorage(folder);assert.ok(isDeepStrictEqual(store.load().data,upgraded), 'The reopened copy differs from the source');
+const copy=await store.backupDatabase();assert.ok(isDeepStrictEqual(readDatabaseBackup(copy),upgraded), 'The verified backup differs from the source');store.close();
+const result={source,isolatedDirectory:folder,passed:true,tasks:upgraded.tasks.length,logs:upgraded.logs.length,days:Object.keys(upgraded.days).length,verbs:upgraded.learning.verbs.length,payloadSha256:createHash('sha256').update(raw).digest('hex')};
+writeFileSync(join(folder,'result.json'),JSON.stringify(result,null,2));
+console.log(JSON.stringify(result));

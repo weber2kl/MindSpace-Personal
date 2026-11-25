@@ -1,0 +1,67 @@
+{
+  "name": "mindspace-personal",
+  "version": "1.6.1",
+  "productName": "MindSpace Personal",
+  "description": "Локальный персональный ежедневник для Windows",
+  "private": true,
+  "type": "module",
+  "main": "desktop/main.mjs",
+  "scripts": {
+    "dev": "node desktop/dev.mjs",
+    "check": "tsc --noEmit",
+    "test": "node --test",
+    "test:desktop": "node desktop/smoke.mjs",
+    "build": "npm run check && vite build",
+    "build:windows": "npm run build && electron-builder --win nsis --x64 --publish never"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "electron": "45.3.1",
+    "electron-builder": "26.18.0",
+    "lucide-react": "^0.468.0",
+    "playwright-core": "1.65.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "~5.9.3",
+    "vite": "8.3.8"
+  },
+  "build": {
+    "appId": "app.mindspace.personal",
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "desktop/main.mjs",
+      "desktop/preload.cjs",
+      "desktop/storage.mjs",
+      "common/**",
+      "dist/**",
+      "build/icon.ico",
+      "desktop/update-file.mjs"
+    ],
+    "npmRebuild": false,
+    "win": {
+      "icon": "build/icon.ico",
+      "signExecutable": false
+    },
+    "nsis": {
+      "artifactName": "MindSpace-Personal-Setup-${version}-${arch}.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "installerLanguages": [
+        "ru_RU"
+      ],
+      "language": "1049"
+    }
+  }
+}
